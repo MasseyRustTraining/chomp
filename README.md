@@ -16,41 +16,28 @@ responses, etc. The resulting move selected is one that
 gives the opponent the worst possible end-of-game result.
 
 In this assignment, you will write a library crate that
-implements a Chomp AI (`src/lib.rs`), and a binary crate
-that allows the game to be played on the command line
-(`src/main.rs`).
+implements a Chomp AI (`src/lib.rs`) for the 4×5 board, and
+a binary crate that allows the game to be played on the
+command line (`src/main.rs`).
 
 ## The library
 
 The game state should be represented by a `struct Board` you
 define. The most important component of the state is the
-representation of the board itself:
+representation of the board itself.
 
-* One way: use an array
-
-  * Use a fixed-size five-by-four (five columns, four rows)
-    array of `bool`s to represent the game state. The element
-    at index `i, j` should be `false` if the square at `i, j`
-    has been eaten, and `true` otherwise.
-
-  * Your program should support multiple board sizes. Since
-    the size of a Rust array is fixed at compile time, your
-    board type needs to have fields representing its logical
-    width and height.
-
-* Another way: use a set
-
-  * You can make a `HashSet` of tuples, where tuple `(i, j)`
-    being in the set means that position is not yet
-    eaten. You can remove elements from the set as they are
-    eaten.
+The obvious board representation is a fixed-size
+four-by-five (four rows, five columns) array of `bool`s to
+represent the game state. The element at index `i, j` should
+be `false` if the square at `i, j` has been eaten, and
+`true` otherwise.
 
 Your `Board` type should support the following operations
 via `impl`:
 
-- Create a board with a given width and height.
+- Create a board.
 
-- Print a graphical representation of a board.
+- Print a textual representation of the board.
 
 - Chomp a given square, removing all squares below it and to
   the right of it.
@@ -116,36 +103,33 @@ For Chomp:
 ## The program
 
 Your program will be a simple terminal interface for playing
-Chomp against your AI. It should perform the following
+Chomp against your AI. It should repeatedly perform the following
 sequence:
-
-1. Ask the user for a board size.
-
-2. Repeatedly:
 
   1. Print the board.
 
-  2. Ask the user to input a move and perform it.
+  2. Ask the user to input a move and perform it. If the
+     user loses, stop.
 
   3. Try to find a winning move. If there is one, perform
      it. Otherwise, stall by chomping as little as
      possible. (You can implement this by chomping the
      furthest-right piece in the lowermost nonempty row.)
+     If you lose, stop.
 
-If the user ever gives invalid input, simply ask again until
-they give valid input.
-
+If the user ever gives invalid input, it is fine to panic
+for now.
 
 ## Hints
 
 - The `prompted` crate from `crates.io` may be useful to get
-  a line of user input.
+  a line of user input. Say `cargo add prompted` to get
+  access to this crate, and take a look at its documentation
+  linked from `crates.io`.
 
-- Several of your library functions should fail under
-  certain conditions. (For example, creating a board with a
-  width or height larger than the maximum should fail.) Use
-  `assert!` to deal with such situations, or return a
-  `Result` that can be checked.
+- Your library functions might fail under certain
+  conditions. Use `assert!` or `panic!` to deal with such
+  situations for now.
 
 - Your `winning_move` function should return some kind of
   `Option`, since there may not be a winning move.
@@ -158,9 +142,9 @@ they give valid input.
 - Document both your crates with Rustdoc comments for each
   datatype, function and method.
 
-- Your crates should build with current `stable` Rust.
+- Your crates should build with current stable Rust.
 
-- Your crates might contain adequate tests (implemented
+- Your crates could contain adequate tests (implemented
   using `#[test]` unit-testing) and assertions (implemented
   using `assert!()` and related macros) for you to be
   comfortable that everything is working correctly.
